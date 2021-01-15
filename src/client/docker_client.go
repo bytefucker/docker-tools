@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"io"
 	"log"
@@ -23,7 +22,7 @@ func NewDockerClient(cli *cli.Context) (*DockerClient, error) {
 	if host == "" {
 		c, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	} else {
-		c, err = client.NewClientWithOpts(client.WithHost("tcp://10.231.50.28:2375"))
+		c, err = client.NewClientWithOpts(client.WithHost(host))
 	}
 	if err != nil {
 		log.Panic("connect docker error ", err)
@@ -33,6 +32,7 @@ func NewDockerClient(cli *cli.Context) (*DockerClient, error) {
 	}, err
 }
 
+//保存镜像
 func (c *DockerClient) Save(cli *cli.Context) (err error) {
 	images := cli.StringSlice("images")
 	filePath := cli.String("path")
@@ -41,16 +41,24 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 	}
 	ctx := context.Background()
 	reader, err := c.client.ImageSave(ctx, images)
-	defer reader.Close()
 	if err != nil {
 		log.Println("read image error", err)
 		return err
 	}
+	defer reader.Close()
 	file, err := os.Create(path.Join(filePath, "image.tar.gz"))
-	defer file.Close()
 	if err != nil {
 		log.Println("create file error", err)
 		return err
+	}
+	defer file.Close()
+	for {
+		buff := make([]byte, 1024*10)
+		i, err := reader.Read(buff)
+		if err == io.EOF {
+			break
+		}
+		file.Write(buff[0:i])
 	}
 	return err
 }
@@ -59,10 +67,10 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 func (c *DockerClient) pull(image string) {
 	ctx := context.Background()
 	reader, err := c.client.ImagePull(ctx, image, types.ImagePullOptions{})
-	defer reader.Close()
 	if err != nil {
-		logrus.Warnf("pull image %s failed ", image)
+		log.Fatalf("pull image %s failed %s", image, err)
 		return
 	}
+	defer reader.Close()
 	io.Copy(os.Stdout, reader)
 }
