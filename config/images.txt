@@ -1,0 +1,5 @@
+ampregistry:5000/sng-biz-video-structure-realtime-pubsub:2.0.1.202101151531-dzh_shanghai_SLW_from_from_vsr-release-v2.0.1-20200714-87afa43a-alpha
+ampregistry:5000/sng-biz-video-structure-realtime-camera:2.0.1.202101151531-dzh_shanghai_SLW_from_from_vsr-release-v2.0.1-20200714-87afa43a-alpha
+ampregistry:5000/sng-biz-video-structure-realtime-offline-task:2.0.1.202101151531-dzh_shanghai_SLW_from_from_vsr-release-v2.0.1-20200714-87afa43a-alpha
+ampregistry:5000/sng-biz-video-structure-realtime-plantask:2.0.1.202101151531-dzh_shanghai_SLW_from_from_vsr-release-v2.0.1-20200714-87afa43a-alpha
+ampregistry:5000/sng-biz-video-structure-web:2.0.1.2101151605-dzh_shanghai_SLW_from_vsr-release-v2.0.1-20200714-d1c1fa5c-dzh_shanghai_SLW_from_vsr-release-v2.0.1-20200714

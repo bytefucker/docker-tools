@@ -1,7 +1,7 @@
 package main
 
 import (
-	"docker-sdk/client"
+	"docker-tools/client"
 	"github.com/urfave/cli/v2"
 	"log"
 	"os"

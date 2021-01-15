@@ -1,4 +1,4 @@
 .idea/
 *.iml
 
-src/config/images.txt
+config/images.txt

@@ -1,4 +1,4 @@
-module docker-sdk
+module docker-tools
 
 go 1.15
 
