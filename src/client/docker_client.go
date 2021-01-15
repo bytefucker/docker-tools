@@ -2,6 +2,7 @@ package client
 
 import (
 	"bufio"
+	"compress/gzip"
 	"context"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -56,13 +57,15 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 		return err
 	}
 	defer file.Close()
+	writer := gzip.NewWriter(file)
+	defer writer.Close()
 	for {
 		buff := make([]byte, 1024*10)
 		i, err := reader.Read(buff)
 		if err == io.EOF {
 			break
 		}
-		file.Write(buff[0:i])
+		writer.Write(buff[0:i])
 	}
 	return err
 }
