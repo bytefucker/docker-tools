@@ -38,6 +38,7 @@ func NewDockerClient(cli *cli.Context) (*DockerClient, error) {
 
 //保存镜像
 func (c *DockerClient) Save(cli *cli.Context) (err error) {
+	t1 := time.Now()
 	imagesVal := cli.StringSlice("images")
 	pathVal := cli.String("path")
 	images, fileName := resolveImages(imagesVal)
@@ -69,6 +70,8 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 		}
 		writer.Write(buff[0:i])
 	}
+	t2 := time.Now()
+	log.Printf("######耗时：%f s", t2.Sub(t1).Seconds())
 	return err
 }
 
@@ -76,11 +79,12 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 func resolveImages(imagesVal []string) ([]string, string) {
 	format := time.Now().Format("20060102150405")
 	if len(imagesVal) == 1 {
-		path := path.Join("./", imagesVal[0])
-		_, err := os.Stat(path)
+		filePath := path.Join("./", imagesVal[0])
+		_, err := os.Stat(filePath)
 		if err == nil {
-			split := strings.Split(imagesVal[0], ".")
-			images := readFileImages(path)
+			_, file := path.Split(imagesVal[0])
+			split := strings.Split(file, ".")
+			images := readFileImages(filePath)
 			return images, split[0]
 		}
 	}
