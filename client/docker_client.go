@@ -11,6 +11,8 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
+	"time"
 )
 
 type DockerClient struct {
@@ -38,7 +40,7 @@ func NewDockerClient(cli *cli.Context) (*DockerClient, error) {
 func (c *DockerClient) Save(cli *cli.Context) (err error) {
 	imagesVal := cli.StringSlice("images")
 	pathVal := cli.String("path")
-	images := resolveImages(imagesVal)
+	images, fileName := resolveImages(imagesVal)
 	for _, image := range images {
 		log.Println("####开始拉取镜像:", image)
 		c.pull(image)
@@ -51,7 +53,7 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 		return err
 	}
 	defer reader.Close()
-	file, err := os.Create(path.Join(pathVal, "image.tar.gz"))
+	file, err := os.Create(path.Join(pathVal, fileName+".tar.gz"))
 	if err != nil {
 		log.Println("####create file error", err)
 		return err
@@ -71,15 +73,18 @@ func (c *DockerClient) Save(cli *cli.Context) (err error) {
 }
 
 //解析镜像
-func resolveImages(imagesVal []string) []string {
+func resolveImages(imagesVal []string) ([]string, string) {
+	format := time.Now().Format("20060102150405")
 	if len(imagesVal) == 1 {
 		path := path.Join("./", imagesVal[0])
 		_, err := os.Stat(path)
 		if err == nil {
-			return readFileImages(path)
+			split := strings.Split(imagesVal[0], ".")
+			images := readFileImages(path)
+			return images, split[0]
 		}
 	}
-	return imagesVal
+	return imagesVal, "images_" + format
 }
 
 func readFileImages(path string) []string {

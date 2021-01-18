@@ -33,7 +33,7 @@ func main() {
 				Name:        "path",
 				Aliases:     []string{"p"},
 				DefaultText: "./",
-				Usage:       "镜像包保存位置",
+				Usage:       "镜像包保存位置。只需要填路径不需要文件名称",
 			},
 		},
 	}
@@ -46,7 +46,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "host",
-				Usage: "镜像中心地址host。默认为本地连接，远程连接:tcp://10.231.50.28:2375",
+				Usage: "镜像中心地址host。默认为本地连接;远程连接:tcp://10.231.50.28:2375",
 			},
 		},
 	}
